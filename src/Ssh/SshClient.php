@@ -46,7 +46,7 @@ class SshClient
         if ($this->output->isDebug()) {
             $sshString = $ssh[0];
             for ($i = 1; $i < count($ssh); $i++) {
-                $sshString .= ' ' . \Deployer\quote((string) $ssh[$i]);
+                $sshString .= ' ' . \Deployer\quote((string)$ssh[$i]);
             }
             $this->output->writeln("[$host] $sshString");
         }
@@ -76,9 +76,24 @@ class SshClient
             $process->run($callback);
         } catch (ProcessTimedOutException $exception) {
             // Let's try to kill all processes started by this command.
-            $pid = $this->run($host, "ps x | grep $shellId | grep -v grep | awk '{print \$1}'", $params->with(timeout: 10));
-            // Minus before pid means all processes in this group.
-            $this->run($host, "kill -9 -$pid", $params->with(timeout: 20));
+            // Cleanup runs pass noCleanup so a timeout here can't recurse,
+            // and cleanup failures must not mask the timeout, so swallow them.
+            if (!$params->noCleanup) {
+                try {
+                    $pid = trim($this->run(
+                        $host,
+                        "ps x | grep $shellId | grep -v grep | awk '{print \$1}'",
+                        $params->with(timeout: 10, noCleanup: true),
+                    ));
+                    if ($pid !== '') {
+                        // Minus before pid means all processes in this group.
+                        $this->run($host, "kill -9 -$pid", $params->with(timeout: 20, noCleanup: true));
+                    }
+                } catch (\Throwable) {
+                    // The shell may have already exited, or `ps`/`kill` may be
+                    // restricted. Either way, the timeout is the real error.
+                }
+            }
             throw new TimeoutException(
                 $command,
                 $exception->getExceededTimeout(),
