@@ -11,20 +11,6 @@
 
 <p align="center"><br><br><a href="https://deployer.org"><img src="https://medv.io/assets/deployer/deployer.gif" alt="Deployer Screenshot" width="530"></a><br><br><br></p>
 
----
-
-<p style="font-size: 21px; color:black;">
-    Browser testing via<br> 
-    <a href="https://www.testmu.ai" target="_blank">
-        <picture>
-            <source media="(prefers-color-scheme: dark)" srcset=".github/testmu-black-logo.png" width="800">
-            <img src=".github/testmu-white-logo.png" alt="Testmu AI" width="800">
-        </picture>
-    </a>
-</p>
-
----
-
 <a href="https://github.com/deployphp/deployer/actions?query=workflow%3Atest"><img src="https://github.com/deployphp/deployer/workflows/test/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/deployer/deployer"><img src="https://img.shields.io/packagist/v/deployer/deployer.svg?style=flat" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/deployer/deployer"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="License"></a>
