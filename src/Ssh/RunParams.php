@@ -9,17 +9,17 @@ class RunParams
      * @param array<string, scalar>|null $secrets
      */
     public function __construct(
-        public ?string  $shell = null,
-        public ?string $cwd = null,
-        public ?array  $env = null,
+        public readonly ?string  $shell = null,
+        public readonly ?string $cwd = null,
+        public readonly ?array  $env = null,
         public ?string $dotenv = null,
-        public bool    $nothrow = false,
-        public ?int    $timeout = null,
-        public bool    $killOnTimeout = true,
-        public ?int    $idleTimeout = null,
-        public bool    $forceOutput = false,
+        public readonly bool    $nothrow = false,
+        public readonly ?int    $timeout = null,
+        public readonly bool    $killOnTimeout = true,
+        public readonly ?int    $idleTimeout = null,
+        public readonly bool    $forceOutput = false,
         #[\SensitiveParameter]
-        public ?array  $secrets = null,
+        public readonly ?array  $secrets = null,
     ) {}
 
     /**
@@ -31,10 +31,17 @@ class RunParams
         ?int $timeout = null,
         ?bool $killOnTimeout = null,
     ): self {
-        $params = clone $this;
-        $params->secrets = array_merge($params->secrets ?? [], $secrets ?? []);
-        $params->timeout = $timeout ?? $params->timeout;
-        $params->killOnTimeout = $killOnTimeout ?? $params->killOnTimeout;
-        return $params;
+        return new self(
+            $this->shell,
+            $this->cwd,
+            $this->env,
+            $this->dotenv,
+            $this->nothrow,
+            $timeout ?? $this->timeout,
+            $killOnTimeout ?? $this->killOnTimeout,
+            $this->idleTimeout,
+            $this->forceOutput,
+            array_merge($this->secrets ?? [], $secrets ?? []),
+        );
     }
 }
